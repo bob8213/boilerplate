@@ -15,7 +15,9 @@ fn main() {
 }
 
 fn copy_file(arg: String) -> Result<(), Box<dyn std::error::Error>> {
-    let path = env::current_exe()?.parent().unwrap().join(arg.clone());
+    let files = env::current_exe()?.parent().unwrap().join("files");
+    let _ = fs::create_dir(&files);
+    let path = files.join(arg.clone());
 
     if path.exists() {
         let out = {
@@ -25,9 +27,8 @@ fn copy_file(arg: String) -> Result<(), Box<dyn std::error::Error>> {
         };
 
         if path.is_dir() {
-            // TODO
+            return Err("Only files are currently supported".into());
         } else {
-            // Let's assume that all dirs on the path exist
             fs::copy(path, out)?;
         }
     } else {
